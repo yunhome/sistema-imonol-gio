@@ -1,0 +1,67 @@
+import random
+
+def carregar_perguntas():
+    """Carrega o banco de perguntas sobre o Sistema Imunológico."""
+    perguntas = [
+        {
+            "pergunta": "Qual célula de defesa é conhecida por realizar a fagocitose, 'engolindo' patógenos?",
+            "opcoes": ["A) Linfócito T", "B) Macrófago", "C) Basófilo", "D) Plaquetas"],
+            "resposta": "B"
+        },
+        {
+            "pergunta": "Qual molécula é produzida por linfócitos B e atua 'marcando' os invasores para destruição?",
+            "opcoes": ["A) Hemoglobina", "B) Insulina", "C) Anticorpo", "D) Adrenalina"],
+            "resposta": "C"
+        },
+        {
+            "pergunta": "Qual é a primeira linha de defesa não específica do corpo humano?",
+            "opcoes": ["A) Ação dos Linfócitos T", "B) Produção de Anticorpos", "C) Pele e Mucosas", "D) Febre alta"],
+            "resposta": "C"
+        },
+        {
+            "pergunta": "O que acontece na resposta inflamatória (ex: inchaço e vermelhidão)?",
+            "opcoes": ["A) Diminuição do fluxo sanguíneo.", "B) Aumento da produção de plaquetas.", "C) Aumento do fluxo sanguíneo para a área, atraindo células de defesa.", "D) Produção de anticorpos em massa."],
+            "resposta": "C"
+        }
+    ]
+    # Embaralha a ordem das perguntas
+    random.shuffle(perguntas)
+    return perguntas
+
+def jogar_quiz():
+    """Função principal do jogo de perguntas e respostas."""
+    perguntas = carregar_perguntas()
+    pontuacao = 0
+    total_perguntas = len(perguntas)
+
+    print("--- BEM-VINDO ao Desafio do Sistema Imunológico! ---")
+    print(f"Você responderá a {total_perguntas} perguntas sobre as defesas do corpo.\n")
+
+    for i, item in enumerate(perguntas):
+        print(f"** PERGUNTA {i + 1} de {total_perguntas}: **")
+        print(item["pergunta"])
+        for opcao in item["opcoes"]:
+            print(opcao)
+
+        # Loop para garantir que a resposta seja válida
+        while True:
+            resposta_usuario = input("Sua resposta (A, B, C ou D): ").strip().upper()
+            if resposta_usuario in ["A", "B", "C", "D"]:
+                break
+            print("Resposta inválida. Por favor, digite A, B, C ou D.")
+
+        if resposta_usuario == item["resposta"]:
+            pontuacao += 1
+            print("Correto! 🛡️")
+        else:
+            print(f"Incorreto. A resposta correta era {item['resposta']}. 🦠")
+
+        print("-" * 30)
+
+    # Resultado final
+    print("\n--- FIM DO DESAFIO ---")
+    print(f"Sua pontuação final é: {pontuacao} de {total_perguntas}!")
+
+# Inicia o jogo
+if __name__ == "__main__":
+    jogar_quiz()
