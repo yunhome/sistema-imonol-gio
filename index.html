@@ -75,6 +75,7 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
             margin-top: 20px;
+            display: none;
         }
 
         #next-button:hover {
@@ -144,64 +145,4 @@
             {
                 question: "O que é a imunidade adquirida?",
                 options: ["Imunidade que ocorre após a exposição a um patógeno", "Imunidade presente desde o nascimento", "Imunidade fornecida por medicamentos", "Imunidade adquirida pelo contato com animais"],
-                answer: "Imunidade que ocorre após a exposição a um patógeno"
-            }
-        ];
-
-        let currentQuestionIndex = 0;
-        let score = 0;
-
-        function loadQuestion() {
-            const question = questions[currentQuestionIndex];
-            document.getElementById("question").textContent = question.question;
-            
-            const optionsContainer = document.getElementById("options");
-            optionsContainer.innerHTML = '';
-            question.options.forEach(option => {
-                const optionElement = document.createElement("div");
-                optionElement.classList.add("option");
-                optionElement.textContent = option;
-                optionElement.onclick = () => checkAnswer(option);
-                optionsContainer.appendChild(optionElement);
-            });
-        }
-
-        function checkAnswer(selectedOption) {
-            const correctAnswer = questions[currentQuestionIndex].answer;
-            if (selectedOption === correctAnswer) {
-                score++;
-            }
-            document.getElementById("next-button").style.display = "block";
-        }
-
-        function nextQuestion() {
-            currentQuestionIndex++;
-            if (currentQuestionIndex < questions.length) {
-                loadQuestion();
-                document.getElementById("next-button").style.display = "none";
-            } else {
-                endGame();
-            }
-        }
-
-        function endGame() {
-            document.getElementById("quiz-container").style.display = "none";
-            document.getElementById("score-container").classList.remove("hidden");
-            document.getElementById("score").textContent = score;
-            document.getElementById("total-questions").textContent = questions.length;
-        }
-
-        function restartGame() {
-            currentQuestionIndex = 0;
-            score = 0;
-            document.getElementById("quiz-container").style.display = "block";
-            document.getElementById("score-container").classList.add("hidden");
-            loadQuestion();
-            document.getElementById("next-button").style.display = "none";
-        }
-
-        // Inicia o jogo
-        loadQuestion();
-    </script>
-</body>
-</html>
+                answer: "Imunidade que ocorre após a exposição
