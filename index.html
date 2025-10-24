@@ -1,25 +1,207 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz do Sistema Imunológico</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Jogo de Perguntas: Sistema Imunológico</title>
+    <style>
+        /* Reset básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #00bcd4, #4caf50);
+            color: white;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #fff;
+            color: #333;
+            width: 100%;
+            max-width: 600px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        #question {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+        }
+
+        #options {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .option {
+            background-color: #008cba;
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .option:hover {
+            background-color: #006b8f;
+            transform: scale(1.05);
+        }
+
+        #next-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        #next-button:hover {
+            background-color: #45a049;
+        }
+
+        #score-container {
+            font-size: 1.2rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .btn {
+            background-color: #ff4081;
+            color: white;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #e5005b;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>Batalha Imunológica!</h1>
-        <div id="quiz-box">
-            <h2 id="question">Pergunta aparecerá aqui.</h2>
-            <div id="answer-buttons" class="btn-grid">
-                </div>
-            <button id="next-btn">Próxima Pergunta</button>
-            <div id="result-container" class="hide">
-                <p id="final-score"></p>
-                <button id="restart-btn">Jogar Novamente</button>
-            </div>
+        <h1>Teste seu conhecimento sobre o Sistema Imunológico!</h1>
+        <div id="quiz-container">
+            <p id="question"></p>
+            <div id="options"></div>
+            <button id="next-button" class="btn" onclick="nextQuestion()">Próxima Pergunta</button>
+        </div>
+        <div id="score-container" class="hidden">
+            <h2>Fim do Jogo!</h2>
+            <p>Você acertou <span id="score"></span> de <span id="total-questions"></span> perguntas.</p>
+            <button onclick="restartGame()" class="btn">Jogar Novamente</button>
         </div>
     </div>
-    <script src="script.js"></script>
+
+    <script>
+        const questions = [
+            {
+                question: "Qual é a principal função do sistema imunológico?",
+                options: ["Proteger contra doenças", "Regular a digestão", "Gerar energia", "Controlar a temperatura corporal"],
+                answer: "Proteger contra doenças"
+            },
+            {
+                question: "O que são anticorpos?",
+                options: ["Substâncias que combatem infecções", "Partes do DNA", "Fungos que causam doenças", "Células do fígado"],
+                answer: "Substâncias que combatem infecções"
+            },
+            {
+                question: "Qual célula é responsável pela resposta imunológica contra vírus?",
+                options: ["Células T", "Plaquetas", "Glóbulos vermelhos", "Neurônios"],
+                answer: "Células T"
+            },
+            {
+                question: "O que é uma vacina?",
+                options: ["Uma substância que estimula a produção de anticorpos", "Uma forma de remédio para dor", "Um tipo de antibiótico", "Uma substância que mata vírus diretamente"],
+                answer: "Uma substância que estimula a produção de anticorpos"
+            },
+            {
+                question: "O que é a imunidade adquirida?",
+                options: ["Imunidade que ocorre após a exposição a um patógeno", "Imunidade presente desde o nascimento", "Imunidade fornecida por medicamentos", "Imunidade adquirida pelo contato com animais"],
+                answer: "Imunidade que ocorre após a exposição a um patógeno"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            const question = questions[currentQuestionIndex];
+            document.getElementById("question").textContent = question.question;
+            
+            const optionsContainer = document.getElementById("options");
+            optionsContainer.innerHTML = '';
+            question.options.forEach(option => {
+                const optionElement = document.createElement("div");
+                optionElement.classList.add("option");
+                optionElement.textContent = option;
+                optionElement.onclick = () => checkAnswer(option);
+                optionsContainer.appendChild(optionElement);
+            });
+        }
+
+        function checkAnswer(selectedOption) {
+            const correctAnswer = questions[currentQuestionIndex].answer;
+            if (selectedOption === correctAnswer) {
+                score++;
+            }
+            document.getElementById("next-button").style.display = "block";
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+                document.getElementById("next-button").style.display = "none";
+            } else {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            document.getElementById("quiz-container").style.display = "none";
+            document.getElementById("score-container").classList.remove("hidden");
+            document.getElementById("score").textContent = score;
+            document.getElementById("total-questions").textContent = questions.length;
+        }
+
+        function restartGame() {
+            currentQuestionIndex = 0;
+            score = 0;
+            document.getElementById("quiz-container").style.display = "block";
+            document.getElementById("score-container").classList.add("hidden");
+            loadQuestion();
+            document.getElementById("next-button").style.display = "none";
+        }
+
+        // Inicia o jogo
+        loadQuestion();
+    </script>
 </body>
 </html>
