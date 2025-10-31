@@ -1,213 +1,137 @@
-<!DOCTYPE html>
-<html lang="pt-br">
+<!DOCTYPE html><html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogo de Perguntas: Sistema Imunológico</title>
-    <style>
-        /* Reset básico */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jogo da Memória - Sistema Imunológico</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #e8f4f7;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }h1 {
+  color: #1e5061;
+  margin-bottom: 20px;
+}
 
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(to right, #00bcd4, #4caf50);
-            color: white;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 20px;
-        }
+.game-board {
+  display: grid;
+  grid-template-columns: repeat(8, 100px);
+  gap: 10px;
+  justify-content: center;
+}
 
-        .container {
-            background-color: #fff;
-            color: #333;
-            width: 100%;
-            max-width: 600px;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-        }
+.card {
+  width: 100px;
+  height: 100px;
+  perspective: 1000px;
+  cursor: pointer;
+}
 
-        h1 {
-            font-size: 2rem;
-            margin-bottom: 20px;
-        }
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
 
-        #question {
-            font-size: 1.4rem;
-            margin-bottom: 20px;
-        }
+.card.flipped .card-inner {
+  transform: rotateY(180deg);
+}
 
-        #options {
-            display: grid;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
+.card-front, .card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  padding: 5px;
+}
 
-        .option {
-            background-color: #008cba;
-            color: white;
-            padding: 15px 20px;
-            font-size: 1.1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
+.card-front {
+  background-color: #fff;
+  color: #1e5061;
+  border: 2px solid #1e5061;
+  transform: rotateY(180deg);
+}
 
-        .option:hover {
-            background-color: #006b8f;
-            transform: scale(1.05);
-        }
+.card-back {
+  background-color: #1e5061;
+  color: #fff;
+}
 
-        #next-button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 12px 20px;
-            font-size: 1.1rem;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin-top: 20px;
-            display: none;
-        }
-
-        #next-button:hover {
-            background-color: #45a049;
-        }
-
-        #score-container {
-            font-size: 1.2rem;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .btn {
-            background-color: #ff4081;
-            color: white;
-            padding: 12px 25px;
-            font-size: 1.1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn:hover {
-            background-color: #e5005b;
-        }
-    </style>
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Teste seu conhecimento sobre o Sistema Imunológico!</h1>
-        <div id="quiz-container">
-            <p id="question"></p>
-            <div id="options"></div>
-            <button id="next-button" class="btn" onclick="nextQuestion()">Próxima Pergunta</button>
+  <h1>🧠 Jogo da Memória - Sistema Imunológico</h1>
+  <div class="game-board" id="gameBoard"></div>  <script>
+    const pairs = [
+      ['Linfócito T', 'Ataca células infectadas por vírus'],
+      ['Linfócito B', 'Produz anticorpos'],
+      ['Macrófago', 'Engole e destrói microrganismos'],
+      ['Anticorpos', 'Proteínas que neutralizam invasores'],
+      ['Antígeno', 'Substância estranha que ativa o sistema imune'],
+      ['Vacina', 'Estimula o corpo a produzir defesa sem causar doença'],
+      ['Imunidade inata', 'Defesa natural, presente desde o nascimento'],
+      ['Imunidade adquirida', 'Desenvolvida após exposição a antígenos'],
+      ['Medula óssea', 'Onde são produzidas as células de defesa'],
+      ['Timo', 'Matura os linfócitos T'],
+      ['Baço', 'Filtra o sangue e elimina células velhas'],
+      ['Glóbulos brancos', 'Células de defesa do corpo'],
+      ['Doença autoimune', 'Quando o corpo ataca a si mesmo'],
+      ['Alergia', 'Reação exagerada a substâncias inofensivas'],
+      ['Fagocitose', 'Englobar e destruir microrganismos'],
+      ['Soro', 'Contém anticorpos prontos e dá imunidade imediata']
+    ];
+
+    let cards = [];
+    pairs.forEach(pair => {
+      cards.push({ text: pair[0], matchId: pair[0] });
+      cards.push({ text: pair[1], matchId: pair[0] });
+    });
+
+    cards.sort(() => 0.5 - Math.random());
+
+    const board = document.getElementById('gameBoard');
+    let flippedCards = [];
+
+    cards.forEach(card => {
+      const cardElement = document.createElement('div');
+      cardElement.classList.add('card');
+      cardElement.innerHTML = `
+        <div class="card-inner">
+          <div class="card-front">${card.text}</div>
+          <div class="card-back">?</div>
         </div>
-        <div id="score-container" class="hidden">
-            <h2>Fim do Jogo!</h2>
-            <p>Você acertou <span id="score"></span> de <span id="total-questions"></span> perguntas.</p>
-            <button onclick="restartGame()" class="btn">Jogar Novamente</button>
-        </div>
-    </div>
+      `;
+      board.appendChild(cardElement);
 
-    <script>
-        const questions = [
-            {
-                question: "Qual é a principal função do sistema imunológico?",
-                options: ["Proteger contra doenças", "Regular a digestão", "Gerar energia", "Controlar a temperatura corporal"],
-                answer: "Proteger contra doenças"
-            },
-            {
-                question: "O que são anticorpos?",
-                options: ["Substâncias que combatem infecções", "Partes do DNA", "Fungos que causam doenças", "Células do fígado"],
-                answer: "Substâncias que combatem infecções"
-            },
-            {
-                question: "Qual célula é responsável pela resposta imunológica contra vírus?",
-                options: ["Células T", "Plaquetas", "Glóbulos vermelhos", "Neurônios"],
-                answer: "Células T"
-            },
-            {
-                question: "O que é uma vacina?",
-                options: ["Uma substância que estimula a produção de anticorpos", "Uma forma de remédio para dor", "Um tipo de antibiótico", "Uma substância que mata vírus diretamente"],
-                answer: "Uma substância que estimula a produção de anticorpos"
-            },
-            {
-                question: "O que é a imunidade adquirida?",
-                options: ["Imunidade que ocorre após a exposição a um patógeno", "Imunidade presente desde o nascimento", "Imunidade fornecida por medicamentos", "Imunidade adquirida pelo contato com animais"],
-                answer: "Imunidade que ocorre após a exposição a um patógeno"
-            }
-        ];
+      cardElement.addEventListener('click', () => {
+        if (cardElement.classList.contains('flipped')) return;
+        cardElement.classList.add('flipped');
+        flippedCards.push({ element: cardElement, matchId: card.matchId });
 
-        let currentQuestionIndex = 0;
-        let score = 0;
-
-        // Carregar a pergunta atual
-        function loadQuestion() {
-            const question = questions[currentQuestionIndex];
-            document.getElementById("question").textContent = question.question;
-            
-            const optionsContainer = document.getElementById("options");
-            optionsContainer.innerHTML = ''; // Limpa as opções anteriores
-            question.options.forEach(option => {
-                const optionElement = document.createElement("div");
-                optionElement.classList.add("option");
-                optionElement.textContent = option;
-                optionElement.onclick = () => checkAnswer(option);
-                optionsContainer.appendChild(optionElement);
-            });
-        }
-
-        // Verifica a resposta do usuário
-        function checkAnswer(selectedOption) {
-            const correctAnswer = questions[currentQuestionIndex].answer;
-            if (selectedOption === correctAnswer) {
-                score++;
-            }
-            document.getElementById("next-button").style.display = "inline-block"; // Exibe o botão de próxima pergunta
-        }
-
-        // Avança para a próxima pergunta
-        function nextQuestion() {
-            currentQuestionIndex++;
-            if (currentQuestionIndex < questions.length) {
-                loadQuestion();
-                document.getElementById("next-button").style.display = "none"; // Esconde o botão de próxima pergunta
+        if (flippedCards.length === 2) {
+          setTimeout(() => {
+            if (flippedCards[0].matchId === flippedCards[1].matchId) {
+              flippedCards = [];
             } else {
-                endGame();
+              flippedCards.forEach(c => c.element.classList.remove('flipped'));
+              flippedCards = [];
             }
+          }, 800);
         }
-
-        // Finaliza o jogo
-        function endGame() {
-            document.getElementById("quiz-container").style.display = "none"; // Esconde a parte do quiz
-            document.getElementById("score-container").classList.remove("hidden"); // Exibe a pontuação final
-            document.getElementById("score").textContent = score;
-            document.getElementById("total-questions").textContent = questions.length;
-        }
-
-        // Reinicia o jogo
-        function restartGame() {
-            currentQuestionIndex = 0;
-            score = 0;
-            document.getElementById("quiz-container").style.display = "block"; // Exibe novamente a parte do quiz
-            document.getElementById("score-container").classList.add("hidden"); // Esconde a pontuação final
-            loadQuestion();
-            document.getElementById("next-button").style.display = "none"; // Esconde o botão de próxima pergunta
-        }
-
-        // Inicia o jogo
-        loadQuestion();
-    </script>
-</body>
+      });
+    });
+  </script></body>
 </html>
