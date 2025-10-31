@@ -6,7 +6,8 @@
   <style>
     body {
       font-family: 'Poppins', sans-serif;
-      background-color: #e8f4f7;
+      background-color: #dff5f2;
+      background-image: linear-gradient(to bottom right, #c3f0e0, #a0d9c5);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -14,20 +15,25 @@
       min-height: 100vh;
       margin: 0;
     }h1 {
-  color: #1e5061;
-  margin-bottom: 20px;
+  color: #125b50;
+  margin-bottom: 30px;
+  text-shadow: 1px 1px 2px #fff;
 }
 
 .game-board {
   display: grid;
-  grid-template-columns: repeat(8, 100px);
-  gap: 10px;
+  grid-template-columns: repeat(8, 110px);
+  gap: 20px;
   justify-content: center;
+  background-color: rgba(255, 255, 255, 0.4);
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
 .card {
-  width: 100px;
-  height: 100px;
+  width: 110px;
+  height: 110px;
   perspective: 1000px;
   cursor: pointer;
 }
@@ -50,31 +56,42 @@
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
-  border-radius: 10px;
+  border-radius: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 12px;
   padding: 5px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
 }
 
 .card-front {
-  background-color: #fff;
-  color: #1e5061;
-  border: 2px solid #1e5061;
+  background-color: #ffffff;
+  color: #125b50;
+  border: 2px solid #125b50;
   transform: rotateY(180deg);
 }
 
 .card-back {
-  background-color: #1e5061;
+  background-color: #0e9f6e;
   color: #fff;
+  font-weight: bold;
+  font-size: 16px;
+  border: 2px solid #0e9f6e;
+}
+
+footer {
+  margin-top: 30px;
+  color: #125b50;
+  font-size: 14px;
 }
 
   </style>
 </head>
 <body>
-  <h1>🧠 Jogo da Memória - Sistema Imunológico</h1>
-  <div class="game-board" id="gameBoard"></div>  <script>
+  <h1>🧫 Jogo da Memória - Sistema Imunológico 🧠</h1>
+  <div class="game-board" id="gameBoard"></div>
+  <footer>Combine as defesas do corpo e aprenda brincando!</footer>  <script>
     const pairs = [
       ['Linfócito T', 'Ataca células infectadas por vírus'],
       ['Linfócito B', 'Produz anticorpos'],
@@ -111,7 +128,7 @@
       cardElement.innerHTML = `
         <div class="card-inner">
           <div class="card-front">${card.text}</div>
-          <div class="card-back">?</div>
+          <div class="card-back">🧬</div>
         </div>
       `;
       board.appendChild(cardElement);
@@ -129,7 +146,7 @@
               flippedCards.forEach(c => c.element.classList.remove('flipped'));
               flippedCards = [];
             }
-          }, 800);
+          }, 900);
         }
       });
     });
